@@ -1,6 +1,7 @@
 #define pulse_ip 7
 int ontime,offtime,duty;
 float freq,period;
+const int pumpPin = 5; //Digital pin for for pump relay
 
 #include <LiquidCrystal_I2C.h>
 
@@ -15,6 +16,8 @@ LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
 void setup()
 {
   pinMode(pulse_ip,INPUT);
+  pinMode(pumpPin, OUTPUT);
+  
   // initialize LCD
   lcd.init();
   // turn on LCD backlight                      
@@ -25,13 +28,31 @@ void setup()
   lcd.setCursor(0,1);
   lcd.print("Duty:");  
 }
+
+
+
 void loop()
 {
+  //read the duty
    ontime = pulseIn(pulse_ip,HIGH);
    offtime = pulseIn(pulse_ip,LOW);
    period = ontime+offtime;
    freq = 1000000.0/period;
    duty = (ontime/period)*100; 
+
+ //trigger the pump
+if (duty > 35)
+{
+  digitalWrite(pumpPin, LOW);
+}
+else
+{
+  digitalWrite(pumpPin, HIGH);
+}
+
+   
+   
+   //dispay the reading
    lcd.setCursor(5,0); 
    lcd.print(freq);
    lcd.print("Hz");

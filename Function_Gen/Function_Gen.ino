@@ -23,13 +23,20 @@
 // These constants won't change. They're used to give names to the pins used:
 const int analogInPin = A0;  // Analog input pin that the potentiometer is attached to
 const int analogOutPin = 9; // Analog output pin that the LED is attached to
+const int buttonPin = 0; //Digital pin for duty cycle adjustment interface
 
 int sensorValue = 0;        // value read from the pot
 int outputValue = 0;        // value output to the PWM (analog out)
+int count = 0;              // value to adjust duty based on button push
 
 void setup() {
   // initialize serial communications at 9600 bps:
   Serial.begin(9600);
+
+  //set mode for button pin
+  pinMode (buttonPin, INPUT_PULLUP);
+  
+  //set PWM frequency 
   // Pins D9 and D10 - 62.5 kHz
   //TCCR1A = 0b00000001; // 8bit
   //TCCR1B = 0b00001001; // x1 fast pwm
@@ -63,8 +70,16 @@ void setup() {
 }
 
 void loop() {
-  // read the analog in value:
-  sensorValue = 750;
+  // read if the button is pushed and adjust duty:
+    if(digitalRead(buttonPin) == 0)
+  {
+    count=count+25;  // increment 'count' by 1
+    sensorValue = count;
+    if(count > 1026)
+      count = 0;
+    delay(200);  // wait 200 milliseconds
+  }
+
   // map it to the range of the analog out:
   outputValue = map(sensorValue, 0, 1023, 0, 255);
   // change the analog out value:
