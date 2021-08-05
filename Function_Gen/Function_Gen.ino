@@ -1,5 +1,5 @@
 
-
+const int analogOutPin = 9; // Analog output pin that the LED is attached to
 const int buttonPin = 0; //Digital pin for duty cycle adjustment interface
 
 int sensorValue = 0;        // value read from the pot
